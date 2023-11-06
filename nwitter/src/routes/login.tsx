@@ -71,15 +71,16 @@ export default function Login() {
           type="password"
           required
         />
-        <Input
-          type="submit"
-          value={isLoading ? "Loading..." : "Create Account"}
-        />
+        <Input type="submit" value={isLoading ? "Loading..." : "Log in"} />
       </Form>
       {error !== "" ? <Error>{error}</Error> : null}
       <Switcher>
         Don't have an account?{" "}
         <Link to="/create-account">Create One &rarr;</Link>
+      </Switcher>
+      <Switcher>
+        Forgot the password?{" "}
+        <Link to="/resetPassword">Reset Password &rarr;</Link>
       </Switcher>
       <GithubBtn />
     </Wrapper>

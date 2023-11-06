@@ -86,7 +86,10 @@ export default function CreateAccouunt() {
           type="password"
           required
         />
-        <Input type="submit" value={isLoading ? "Loading..." : "Log in"} />
+        <Input
+          type="submit"
+          value={isLoading ? "Loading..." : "Create Account"}
+        />
       </Form>
       {error !== "" ? <Error>{error}</Error> : null}
       <Switcher>
