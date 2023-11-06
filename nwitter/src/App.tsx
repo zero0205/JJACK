@@ -59,6 +59,8 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
 
 function App() {
