@@ -1,8 +1,8 @@
-import { addDoc, collection, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
-import styled from "styled-components";
-import { auth, db, storage } from "../firebase";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection, updateDoc } from 'firebase/firestore';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { auth, db, storage } from '../firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const Form = styled.form`
   display: flex;
@@ -19,8 +19,8 @@ const TextArea = styled.textarea`
   background-color: black;
   width: 100%;
   resize: none;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   &::placeholder {
     font-size: 16px;
   }
@@ -60,7 +60,7 @@ const SubmitBtn = styled.input`
 
 export default function PostTweetForm() {
   const [isLoading, setLoading] = useState(false);
-  const [tweet, setTweet] = useState("");
+  const [tweet, setTweet] = useState('');
   const [file, setFile] = useState<File | null>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -71,7 +71,7 @@ export default function PostTweetForm() {
     const { files } = e.target;
     if (files && files.length === 1) {
       if (files[0].size > 1 * 1024 * 1024) {
-        alert("Only files under 1MB can be uploaded.");
+        alert('Only files under 1MB can be uploaded.');
         return;
       }
       setFile(files[0]);
@@ -81,13 +81,13 @@ export default function PostTweetForm() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const user = auth.currentUser;
-    if (!user || isLoading || tweet === "" || tweet.length > 180) return;
+    if (!user || isLoading || tweet === '' || tweet.length > 180) return;
     try {
       setLoading(true);
-      const doc = await addDoc(collection(db, "tweets"), {
+      const doc = await addDoc(collection(db, 'tweets'), {
         tweet,
         createdAt: Date.now(),
-        userName: user.displayName || "Anonymous",
+        userName: user.displayName || 'Anonymous',
         userId: user.uid,
       });
       if (file) {
@@ -101,7 +101,7 @@ export default function PostTweetForm() {
           photo: url,
         });
       }
-      setTweet("");
+      setTweet('');
       setFile(null);
     } catch (e) {
       console.log(e);
@@ -120,7 +120,7 @@ export default function PostTweetForm() {
         placeholder="What is happening?!"
       />
       <AttachFileButton htmlFor="file">
-        {file ? "Photo added ✔" : "Add Photo"}
+        {file ? 'Photo added ✔' : 'Add Photo'}
       </AttachFileButton>
       <AttachFileInput
         onChange={onFileChange}
@@ -130,7 +130,7 @@ export default function PostTweetForm() {
       />
       <SubmitBtn
         type="submit"
-        value={isLoading ? "Posting..." : "Post Tweet"}
+        value={isLoading ? 'Posting...' : 'Post Tweet'}
       />
     </Form>
   );
