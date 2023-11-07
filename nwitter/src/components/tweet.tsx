@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { ITweet } from "./timeline";
+import styled from 'styled-components';
+import { ITweet } from './timeline';
 
 const Wrapper = styled.div`
   display: grid;
@@ -27,18 +27,14 @@ const Photo = styled.img`
   border-radius: 15px;
 `;
 
-export default function Tweet({ username, photo, tweet }: ITweet) {
+export default function Tweet({ userName, photo, tweet }: ITweet) {
   return (
     <Wrapper>
       <Column>
-        <Username>{username}</Username>
+        <Username>{userName}</Username>
         <Payload>{tweet}</Payload>
       </Column>
-      {photo ? (
-        <Column>
-          <Photo src={photo} />
-        </Column>
-      ) : null}
+      <Column>{photo ? <Photo src={photo} /> : null}</Column>
     </Wrapper>
   );
 }
