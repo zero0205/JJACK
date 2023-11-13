@@ -4,12 +4,12 @@ import {
   onSnapshot,
   orderBy,
   query,
-} from 'firebase/firestore';
-import { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { db } from '../firebase';
-import Tweet from './tweet';
-import { Unsubscribe } from 'firebase/auth';
+} from "firebase/firestore";
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import { db } from "../firebase";
+import Tweet from "./tweet";
+import { Unsubscribe } from "firebase/auth";
 
 export interface ITweet {
   id: string;
@@ -24,6 +24,10 @@ const Wrapper = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export default function Timeline() {
@@ -33,8 +37,8 @@ export default function Timeline() {
     let unsubscribe: Unsubscribe | null = null;
     const fetchTweets = async () => {
       const tweetsQuery = query(
-        collection(db, 'tweets'),
-        orderBy('createdAt', 'desc'),
+        collection(db, "tweets"),
+        orderBy("createdAt", "desc"),
         limit(25)
       );
       // const snapshot = await getDocs(tweetsQuery);
