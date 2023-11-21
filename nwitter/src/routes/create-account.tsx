@@ -44,7 +44,6 @@ export default function CreateAccouunt() {
         email,
         password
       );
-      console.log(credentials.user);
       await updateProfile(credentials.user, { displayName: name });
       navigate("/");
     } catch (e) {
@@ -55,8 +54,6 @@ export default function CreateAccouunt() {
     } finally {
       setLoading(false);
     }
-
-    console.log(name, email, password);
   };
   return (
     <Wrapper>

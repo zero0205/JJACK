@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { ITweet } from "./timeline";
 import { auth, db, storage } from "../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditTweetForm from "./edit-tweet-form";
 
 const Wrapper = styled.div`
@@ -57,8 +57,9 @@ const EditButton = styled.button`
   cursor: pointer;
 `;
 
-export default function Tweet({ userName, photo, tweet, userId, id }: ITweet) {
+export default function Tweet({ photo, tweet, userId, id }: ITweet) {
   const user = auth.currentUser;
+  const [name, setName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
   const onDelete = async () => {
@@ -68,7 +69,10 @@ export default function Tweet({ userName, photo, tweet, userId, id }: ITweet) {
       await deleteDoc(doc(db, "tweets", id)); // delete tweet
       // delete photo
       if (photo) {
-        const photoRef = ref(storage, `tweets/${user.uid}-${userName}/${id}`);
+        const photoRef = ref(
+          storage,
+          `tweets/${user.uid}-${user.displayName}/${id}`
+        );
         await deleteObject(photoRef);
       }
     } catch (e) {
@@ -77,14 +81,23 @@ export default function Tweet({ userName, photo, tweet, userId, id }: ITweet) {
     }
   };
 
+  const getName = async () => {
+    const docRef = await getDoc(doc(db, "users", userId));
+    setName(docRef.get("name"));
+  };
+
   const toggleEdit = () => {
     setIsEditing((isEditing) => !isEditing);
   };
 
+  useEffect(() => {
+    getName();
+  }, []);
+
   return (
     <Wrapper>
       <Column>
-        <Username>{userName}</Username>
+        <Username>{name}</Username>
         {isEditing ? (
           <EditTweetForm tweet={tweet} id={id} closeEdit={toggleEdit} />
         ) : (

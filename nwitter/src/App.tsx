@@ -11,6 +11,9 @@ import LoadingScreen from "./components/loading-screen";
 import { auth } from "./firebase";
 import ProtectedRoute from "./components/protected-route";
 import ResetPassword from "./routes/reset-password";
+import Explore from "./routes/explore";
+import Search from "./routes/search";
+import EditProfile from "./routes/editProfile";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +31,18 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "explore",
+        element: <Explore />,
+      },
+      {
+        path: "search",
+        element: <Search />,
+      },
+      {
+        path: "editProfile",
+        element: <EditProfile />,
       },
     ],
   },

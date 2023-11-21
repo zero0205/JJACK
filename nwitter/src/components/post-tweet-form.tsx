@@ -82,14 +82,16 @@ export default function PostTweetForm() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const user = auth.currentUser;
+
     if (!user || isLoading || tweet === "" || tweet.length > 180) return;
     try {
       setLoading(true);
       const doc = await addDoc(collection(db, "tweets"), {
         tweet,
         createdAt: Date.now(),
-        userName: user.displayName || "Anonymous",
         userId: user.uid,
+        likes: 0,
+        retweet: 0,
       });
       if (file) {
         const locationRef = ref(
@@ -102,11 +104,11 @@ export default function PostTweetForm() {
           photo: url,
         });
       }
+      setTweet("");
+      setFile(null);
     } catch (e) {
       console.log(e);
     } finally {
-      setTweet("");
-      setFile(null);
       setLoading(false);
     }
   };
@@ -119,6 +121,7 @@ export default function PostTweetForm() {
         maxLength={180}
         onChange={onChange}
         placeholder="What is happening?!"
+        value={tweet}
       />
       <AttachFileButton htmlFor="file">
         {file ? "Photo added ✔" : "Add Photo"}

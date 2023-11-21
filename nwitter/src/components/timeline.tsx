@@ -16,7 +16,6 @@ export interface ITweet {
   photo?: string;
   tweet: string;
   userId: string;
-  userName: string;
   createdAt: number;
 }
 
@@ -57,12 +56,11 @@ export default function Timeline() {
       // Listen for Realtime changes => subscribe
       unsubscribe = await onSnapshot(tweetsQuery, (snapchot) => {
         const tweets = snapchot.docs.map((doc) => {
-          const { tweet, createdAt, userId, userName, photo } = doc.data();
+          const { tweet, createdAt, userId, photo } = doc.data();
           return {
             tweet,
             createdAt,
             userId,
-            userName,
             photo,
             id: doc.id,
           };
