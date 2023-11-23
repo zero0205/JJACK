@@ -14,6 +14,9 @@ import ResetPassword from "./routes/reset-password";
 import Explore from "./routes/explore";
 import Search from "./routes/search";
 import EditProfile from "./routes/editProfile";
+import GiantsInline from "./fonts/Giants-Inline.ttf";
+import GiantsRegular from "./fonts/Giants-Regular.ttf";
+import GiantsBold from "./fonts/Giants-Bold.ttf";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +32,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "profile",
+        path: "profile/:uid",
         element: <Profile />,
       },
       {
@@ -65,17 +68,31 @@ const GlobalStyles = createGlobalStyle`
   *{
     box-sizing: border-box;
   }
+  @font-face {
+    font-family: "GiantsRegular";
+    src: url(${GiantsRegular}) format("truetype");
+  }
+  @font-face {
+    font-family: "GiantsBold";
+    src: url(${GiantsBold}) format("truetype");
+  }
+  @font-face {
+    font-family: 'GiantsInline';
+    src: url(${GiantsInline}) format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
   body{
     background-color: black;
     color:white;
   }
 `;
+
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: GiantsRegular, sans-serif;
 `;
 
 function App() {
