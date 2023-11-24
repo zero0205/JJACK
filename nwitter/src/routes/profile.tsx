@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { ITweet } from "../components/timeline";
 import Tweet from "../components/tweet";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -71,29 +71,38 @@ const Tweets = styled.div`
   gap: 10px;
 `;
 
+export interface IUser {
+  userId: string;
+  userName: string;
+  description: string;
+  photo?: string;
+}
+
 export default function Profile() {
   const user = auth.currentUser;
-  const [description, setDescription] = useState("");
+  const { uid } = useParams();
+  const [profilePhoto, setProfilePhoto] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userDescription, setUserDescription] = useState("");
   const [tweets, setTweets] = useState<ITweet[]>([]);
 
   const navigate = useNavigate();
 
-  // 본인의 트윗 가져오기
+  // 트윗 가져오기
   const fetchTweets = async () => {
     const tweetQuery = query(
       collection(db, "tweets"),
-      where("userId", "==", user?.uid),
+      where("userId", "==", uid),
       orderBy("createdAt", "desc"),
       limit(25)
     );
     const snapshot = await getDocs(tweetQuery);
     const tweets = snapshot.docs.map((doc) => {
-      const { tweet, createdAt, userId, userName, photo } = doc.data();
+      const { tweet, createdAt, userId, photo } = doc.data();
       return {
         tweet,
         createdAt,
         userId,
-        userName,
         photo,
         id: doc.id,
       };
@@ -103,12 +112,33 @@ export default function Profile() {
 
   // users 정보 갖고 오기
   const getProfile = async () => {
-    if (!user) return;
-    const docRef = doc(db, "users", user.uid);
+    setUserName("");
+    setUserDescription("");
+    setProfilePhoto("");
+    setTweets([]);
+    if (!uid) return;
+    // users Collection 정보 갖고 오기
+    const docRef = doc(db, "users", uid);
     const snapshot = await getDoc(docRef);
-    if (snapshot) {
-      setDescription(snapshot.data()?.description);
+    if (snapshot.exists()) {
+      const { userName, description, photo } = snapshot.data();
+      setUserDescription(description);
+      setUserName(userName);
+      setProfilePhoto(photo);
+    } else {
+      navigate("/editProfile");
     }
+    // // 프로필 사진 갖고 오기
+    // const photoRef = ref(storage, `avatars/${uid}`);
+    // await getDownloadURL(photoRef)
+    //   .then((photoUrl) => {
+    //     setProfilePhoto(photoUrl);
+    //   })
+    //   .catch((error) => {
+    //     if (error.code === "storage/object-not-found") {
+    //       console.log(error);
+    //     }
+    //   });
   };
 
   const onClickProfile = () => {
@@ -118,13 +148,13 @@ export default function Profile() {
   useEffect(() => {
     fetchTweets();
     getProfile();
-  }, []);
+  }, [uid]);
 
   return (
     <Wrapper>
       <AvatarWrapper>
-        {user?.photoURL ? (
-          <AvatarImg src={user?.photoURL} />
+        {profilePhoto ? (
+          <AvatarImg src={profilePhoto} />
         ) : (
           <svg
             fill="currentColor"
@@ -138,25 +168,27 @@ export default function Profile() {
       </AvatarWrapper>
 
       <NameWrapper>
-        <Name>{user?.displayName ?? "(Anonymous)"}</Name>
-        <EditBtn onClick={onClickProfile}>
-          <svg
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-            ></path>
-          </svg>
-        </EditBtn>
+        <Name>{userName}</Name>
+        {user?.uid === uid ? (
+          <EditBtn onClick={onClickProfile}>
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+              ></path>
+            </svg>
+          </EditBtn>
+        ) : null}
       </NameWrapper>
-      <Description>{description}</Description>
+      <Description>{userDescription}</Description>
       <Tweets>
         {tweets.map((tweet) => (
           <Tweet key={tweet.id} {...tweet} />

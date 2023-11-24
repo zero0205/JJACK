@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { auth, db, storage } from "../firebase";
 import React, { useState, useEffect } from "react";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
@@ -102,14 +102,31 @@ export default function EditProfile() {
 
   // 프로필 사진 바꾸기
   const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (files && files.length === 1) {
-      const file = files[0];
-      const locationRef = ref(storage, `avatars/${user?.uid}`);
-      const result = await uploadBytes(locationRef, file);
-      const avatarUrl = await getDownloadURL(result.ref);
-      setAvatar(avatarUrl);
-      await updateProfile(user, { photoURL: avatarUrl });
+    if (
+      confirm("프로필 사진을 바꾸시겠습니까? 확인을 누르면 바로 적용됩니다.")
+    ) {
+      const { files } = e.target;
+      if (files && files.length === 1) {
+        const file = files[0];
+        const locationRef = ref(storage, `avatars/${user?.uid}`);
+        const result = await uploadBytes(locationRef, file);
+        const avatarUrl = await getDownloadURL(result.ref);
+        setAvatar(avatarUrl);
+
+        const snapshot = await getDoc(doc(db, "users", user.uid));
+        if (snapshot.exists()) {
+          await setDoc(doc(db, "users", user.uid), {
+            userName: name,
+            description: description,
+            photo: avatarUrl,
+          });
+        } else {
+          await updateDoc(doc(db, "users", user.uid), {
+            photo: avatarUrl,
+          });
+        }
+        await updateProfile(user, { photoURL: avatarUrl });
+      }
     }
   };
 
@@ -117,12 +134,23 @@ export default function EditProfile() {
     e.preventDefault();
     if (!user) return;
     try {
-      await setDoc(doc(db, "users", user.uid), {
-        name: name,
-        description: description,
-      });
+      const docRef = doc(db, "users", user.uid);
+      const snapshot = await getDoc(docRef);
+      if (snapshot.exists()) {
+        await updateDoc(docRef, {
+          userName: name,
+          description: description,
+          photo: avatar,
+        });
+      } else {
+        await setDoc(docRef, {
+          userName: name,
+          description: description,
+          photo: avatar,
+        });
+      }
       await updateProfile(user, { displayName: name });
-      navigate("/profile");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -132,12 +160,14 @@ export default function EditProfile() {
     setName(user?.displayName ?? "");
     if (user === null) {
       navigate("/login");
+      return;
     }
     const getProfile = async () => {
       try {
         const docRef = await getDoc(doc(db, "users", user.uid));
         if (docRef.exists()) {
           setDescription(docRef.get("description"));
+          setAvatar(docRef.get("photo"));
         }
       } catch (error) {
         console.log(error);

@@ -17,6 +17,7 @@ const Menu = styled.div`
   align-items: center;
   gap: 20px;
 `;
+
 const MenuItem = styled.div`
   cursor: pointer;
   display: flex;
@@ -28,7 +29,7 @@ const MenuItem = styled.div`
   border-radius: 50%;
   svg {
     width: 30px;
-    fill: white;
+    color: white;
   }
   &.log-out {
     border-color: tomato;
@@ -39,6 +40,8 @@ const MenuItem = styled.div`
 `;
 
 export default function Layout() {
+  const user = auth.currentUser;
+
   const navigate = useNavigate();
   const onLogout = async () => {
     const ok = confirm("Are you sure you want to logout?");
@@ -66,7 +69,25 @@ export default function Layout() {
             </svg>
           </MenuItem>
         </Link>
-        <Link to="profile">
+        <Link to="/explore">
+          <MenuItem>
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+              ></path>
+            </svg>
+          </MenuItem>
+        </Link>
+        <Link to={"profile/" + user?.uid}>
           <MenuItem>
             <svg
               fill="currentColor"

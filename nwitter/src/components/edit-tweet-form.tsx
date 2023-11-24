@@ -30,7 +30,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const Btn = styled.input`
+const Btn = styled.button`
   background-color: #1d9bf0;
   color: white;
   border: none;
@@ -88,8 +88,8 @@ export default function EditTweetForm({ tweet, id, closeEdit }: Props) {
         placeholder="Please enter the contents to be modified."
         value={newTweet}
       />
-      <Btn type="submit" value={isLoading ? "Loading..." : "Edit Tweet"} />
-      <Btn onClick={closeEdit} value="Close" />
+      <Btn type="submit">{isLoading ? "Loading..." : "Edit Tweet"}</Btn>
+      <Btn onClick={closeEdit}>Close</Btn>
     </Form>
   );
 }
