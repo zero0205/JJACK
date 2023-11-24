@@ -57,7 +57,9 @@ export default function CreateAccouunt() {
   };
   return (
     <Wrapper>
-      <Title>Join X</Title>
+      <Title>
+        Join <span>JJack</span>
+      </Title>
       <Form onSubmit={onSubmit}>
         <Input
           onChange={onChange}

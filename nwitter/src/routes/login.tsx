@@ -47,13 +47,13 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-
-    console.log(email, password);
   };
 
   return (
     <Wrapper>
-      <Title>Log into X</Title>
+      <Title>
+        Log into <span>JJack</span>
+      </Title>
       <Form onSubmit={onSubmit}>
         <Input
           onChange={onChange}

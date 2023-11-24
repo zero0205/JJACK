@@ -19,10 +19,9 @@ const TextArea = styled.textarea`
   background-color: black;
   width: 100%;
   resize: none;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   &::placeholder {
     font-size: 16px;
+    font-family: GiantsRegular;
   }
   &:focus {
     outline: none;
@@ -51,6 +50,7 @@ const SubmitBtn = styled.input`
   padding: 10px 0px;
   border-radius: 20px;
   font-size: 16px;
+  font-family: GiantsRegular;
   cursor: pointer;
   &:hover,
   &:active {
@@ -94,10 +94,7 @@ export default function PostTweetForm() {
         retweet: 0,
       });
       if (file) {
-        const locationRef = ref(
-          storage,
-          `tweets/${user.uid}-${user.displayName}/${doc.id}`
-        );
+        const locationRef = ref(storage, `tweets/${user.uid}/${doc.id}`);
         const result = await uploadBytes(locationRef, file);
         const url = await getDownloadURL(result.ref);
         await updateDoc(doc, {
