@@ -6,6 +6,7 @@ import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import LoadingScreen from "../components/loading-screen";
 import { IUser } from "./profile";
+import UserInfo from "../components/user-info";
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ const BackBtn = styled.div`
   }
 `;
 
-const Tweets = styled.div`
+const UserList = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -61,10 +62,11 @@ export default function Search() {
     );
     const snapshot = await getDocs(tweetQuery);
     const users = snapshot.docs.map((doc, i) => {
-      const { userName, description, photo } = doc.data();
+      const { userName, userEmail, description, photo } = doc.data();
       return {
         userId: doc.id,
         userName,
+        userEmail,
         description,
         photo,
       };
@@ -105,15 +107,11 @@ export default function Search() {
       </SearchAnother>
       {!isLoading ? (
         result.length >= 1 ? (
-          <Tweets>
+          <UserList>
             {result.map((res) => (
-              <div key={res.userId}>
-                <div>{res.userName}</div>
-                <div>{res.description}</div>
-                <div>{res.photo ?? null}</div>
-              </div>
+              <UserInfo key={res.userId} {...res} />
             ))}
-          </Tweets>
+          </UserList>
         ) : (
           <div>{word} 검색 결과가 없습니다.</div>
         )

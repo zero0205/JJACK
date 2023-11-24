@@ -145,6 +145,7 @@ export default function EditProfile() {
       } else {
         await setDoc(docRef, {
           userName: name,
+          userEmail: user.email,
           description: description,
           photo: avatar,
         });

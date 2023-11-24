@@ -74,6 +74,7 @@ const Tweets = styled.div`
 export interface IUser {
   userId: string;
   userName: string;
+  userEmail: string;
   description: string;
   photo?: string;
 }
