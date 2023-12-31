@@ -61,7 +61,7 @@ export default function Search() {
       limit(25)
     );
     const snapshot = await getDocs(tweetQuery);
-    const users = snapshot.docs.map((doc, i) => {
+    const users = snapshot.docs.map((doc) => {
       const { userName, userEmail, description, photo } = doc.data();
       return {
         userId: doc.id,

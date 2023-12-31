@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { ITweet } from "./timeline";
 import { auth, db, storage } from "../firebase";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
-import { deleteObject, getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 import EditTweetForm from "./edit-tweet-form";
 import { useNavigate } from "react-router-dom";
+import { IUser } from "../routes/profile";
 
 const Wrapper = styled.div`
   display: grid;
@@ -34,9 +35,6 @@ const AvatarWrapper = styled.div`
   align-items: center;
   svg {
     width: 24px;
-  }
-  &:hover {
-    cursor: pointer;
   }
 `;
 
@@ -96,8 +94,9 @@ export default function Tweet({ photo, tweet, userId, id }: ITweet) {
 
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState("");
+  // const [name, setName] = useState("");
+  // const [profilePhoto, setProfilePhoto] = useState("");
+  const [userInfo, setUserInfo] = useState<IUser | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const onDelete = async () => {
@@ -123,31 +122,27 @@ export default function Tweet({ photo, tweet, userId, id }: ITweet) {
     navigate(`/profile/${userId}`);
   };
 
-  // Name 가져오기
-  const getName = async () => {
-    const docRef = await getDoc(doc(db, "users", userId));
-    setName(docRef.get("userName"));
-  };
-
-  // 프로필 사진 가져오기
-  const getProfilePhoto = async () => {
-    const fileRef = ref(storage, `avatars/${userId}`);
-    try {
-      await getDownloadURL(fileRef).then((photoUrl) => {
-        setProfilePhoto(photoUrl);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const toggleEdit = () => {
     setIsEditing((isEditing) => !isEditing);
   };
 
   useEffect(() => {
-    getName();
-    getProfilePhoto();
+    // state 초기화
+    setUserInfo(null);
+    // userInfo 갖고 오기
+    const getUserInfo = async () => {
+      const snapshot = await getDoc(doc(db, "users", userId));
+      if (snapshot.exists()) {
+        const { userName, userEmail, photo } = snapshot.data();
+        setUserInfo({
+          userId: snapshot.id,
+          userName: userName,
+          userEmail: userEmail,
+          photo: photo,
+        });
+      }
+    };
+    getUserInfo();
   }, []);
 
   return (
@@ -155,8 +150,8 @@ export default function Tweet({ photo, tweet, userId, id }: ITweet) {
       <Column>
         <UserInfo>
           <AvatarWrapper onClick={onClickUserInfo}>
-            {profilePhoto ? (
-              <AvatarImg src={profilePhoto} />
+            {userInfo?.photo ? (
+              <AvatarImg src={userInfo.photo} />
             ) : (
               <svg
                 fill="currentColor"
@@ -168,7 +163,7 @@ export default function Tweet({ photo, tweet, userId, id }: ITweet) {
               </svg>
             )}
           </AvatarWrapper>
-          <Username onClick={onClickUserInfo}>{name}</Username>
+          <Username onClick={onClickUserInfo}>{userInfo?.userName}</Username>
         </UserInfo>
         {isEditing ? (
           <EditTweetForm tweet={tweet} id={id} closeEdit={toggleEdit} />

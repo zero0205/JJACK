@@ -14,6 +14,7 @@ import {
 import { ITweet } from "../components/timeline";
 import Tweet from "../components/tweet";
 import { useNavigate, useParams } from "react-router-dom";
+import FollowBtn from "../components/follow-btn";
 
 const Wrapper = styled.div`
   display: flex;
@@ -75,16 +76,17 @@ export interface IUser {
   userId: string;
   userName: string;
   userEmail: string;
-  description: string;
+  description?: string;
   photo?: string;
 }
 
 export default function Profile() {
   const user = auth.currentUser;
   const { uid } = useParams();
-  const [profilePhoto, setProfilePhoto] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userDescription, setUserDescription] = useState("");
+  // const [profilePhoto, setProfilePhoto] = useState("");
+  // const [userName, setUserName] = useState("");
+  // const [userDescription, setUserDescription] = useState("");
+  const [userInfo, setUserInfo] = useState<IUser | null>(null);
   const [tweets, setTweets] = useState<ITweet[]>([]);
 
   const navigate = useNavigate();
@@ -113,21 +115,25 @@ export default function Profile() {
 
   // users 정보 갖고 오기
   const getProfile = async () => {
-    setUserName("");
-    setUserDescription("");
-    setProfilePhoto("");
+    // 초기화
+    setUserInfo(null);
     setTweets([]);
     if (!uid) return;
     // users Collection 정보 갖고 오기
     const docRef = doc(db, "users", uid);
     const snapshot = await getDoc(docRef);
     if (snapshot.exists()) {
-      const { userName, description, photo } = snapshot.data();
-      setUserDescription(description);
-      setUserName(userName);
-      setProfilePhoto(photo);
+      const { userName, userEmail, description, photo } = snapshot.data();
+      setUserInfo({
+        userId: snapshot.id,
+        userName: userName,
+        userEmail: userEmail,
+        description: description,
+        photo: photo,
+      });
     } else {
-      navigate("/editProfile");
+      alert("User not found");
+      navigate("/");
     }
     // // 프로필 사진 갖고 오기
     // const photoRef = ref(storage, `avatars/${uid}`);
@@ -154,8 +160,8 @@ export default function Profile() {
   return (
     <Wrapper>
       <AvatarWrapper>
-        {profilePhoto ? (
-          <AvatarImg src={profilePhoto} />
+        {userInfo?.photo ? (
+          <AvatarImg src={userInfo.photo} />
         ) : (
           <svg
             fill="currentColor"
@@ -169,7 +175,7 @@ export default function Profile() {
       </AvatarWrapper>
 
       <NameWrapper>
-        <Name>{userName}</Name>
+        <Name>{userInfo?.userName}</Name>
         {user?.uid === uid ? (
           <EditBtn onClick={onClickProfile}>
             <svg
@@ -187,9 +193,12 @@ export default function Profile() {
               ></path>
             </svg>
           </EditBtn>
-        ) : null}
+        ) : (
+          uid && <FollowBtn userId={uid} />
+        )}
       </NameWrapper>
-      <Description>{userDescription}</Description>
+      <Description>{userInfo?.description}</Description>
+
       <Tweets>
         {tweets.map((tweet) => (
           <Tweet key={tweet.id} {...tweet} />

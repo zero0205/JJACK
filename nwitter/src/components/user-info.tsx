@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { IUser } from "../routes/profile";
+import FollowBtn from "./follow-btn";
 
 const Wrapper = styled.div`
   display: grid;
@@ -24,12 +25,11 @@ const PhotoWrapper = styled.div`
   svg {
     width: 30px;
   }
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
-const Photo = styled.img``;
+const Photo = styled.img`
+  width: 100%;
+`;
 
 const TextInfo = styled.div`
   display: flex;
@@ -51,23 +51,6 @@ const Description = styled.div`
   font-size: 14px;
 `;
 
-const FollowBtn = styled.button`
-  diplay: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #1d9bf0;
-  border: none;
-  border-radius: 15px;
-  padding: 5px;
-  font-family: GiantsRegular;
-  color: white;
-  height: 30px;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.9;
-  }
-`;
-
 export default function UserInfo({
   userId,
   userName,
@@ -75,9 +58,6 @@ export default function UserInfo({
   description,
   photo,
 }: IUser) {
-  const onClick = () => {
-    alert("Follow 기능은 아직 준비 중입니다");
-  };
   return (
     <Wrapper>
       <PhotoWrapper>
@@ -99,7 +79,7 @@ export default function UserInfo({
         <Email>{userEmail}</Email>
         <Description>{description}</Description>
       </TextInfo>
-      <FollowBtn onClick={onClick}>Follow</FollowBtn>
+      <FollowBtn userId={userId} />
     </Wrapper>
   );
 }

@@ -113,18 +113,9 @@ export default function EditProfile() {
         const avatarUrl = await getDownloadURL(result.ref);
         setAvatar(avatarUrl);
 
-        const snapshot = await getDoc(doc(db, "users", user.uid));
-        if (snapshot.exists()) {
-          await setDoc(doc(db, "users", user.uid), {
-            userName: name,
-            description: description,
-            photo: avatarUrl,
-          });
-        } else {
-          await updateDoc(doc(db, "users", user.uid), {
-            photo: avatarUrl,
-          });
-        }
+        await updateDoc(doc(db, "users", user.uid), {
+          photo: avatarUrl,
+        });
         await updateProfile(user, { photoURL: avatarUrl });
       }
     }
@@ -134,24 +125,14 @@ export default function EditProfile() {
     e.preventDefault();
     if (!user) return;
     try {
-      const docRef = doc(db, "users", user.uid);
-      const snapshot = await getDoc(docRef);
-      if (snapshot.exists()) {
-        await updateDoc(docRef, {
-          userName: name,
-          description: description,
-          photo: avatar,
-        });
-      } else {
-        await setDoc(docRef, {
-          userName: name,
-          userEmail: user.email,
-          description: description,
-          photo: avatar,
-        });
-      }
+      await updateDoc(doc(db, "users", user.uid), {
+        userName: name,
+        userEmail: user.email,
+        description: description,
+      });
+
       await updateProfile(user, { displayName: name });
-      navigate("/");
+      navigate(`/profile/${user.uid}`);
     } catch (error) {
       console.log(error);
     }

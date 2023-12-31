@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import {
@@ -12,6 +12,7 @@ import {
   Wrapper,
 } from "../components/auth-components";
 import GithubBtn from "../components/github-btn";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function CreateAccouunt() {
   const navigate = useNavigate();
@@ -45,6 +46,13 @@ export default function CreateAccouunt() {
         password
       );
       await updateProfile(credentials.user, { displayName: name });
+      await setDoc(doc(db, "users", credentials.user.uid), {
+        createdAt: Date.now(),
+        userName: name,
+        userEmail: email,
+        followingNum: 0,
+        followerNum: 0,
+      });
       navigate("/");
     } catch (e) {
       if (e instanceof FirebaseError) {
