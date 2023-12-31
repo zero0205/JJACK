@@ -6,6 +6,9 @@
 
 ![JJack-tweeting](https://github.com/zero0205/Nwitter/assets/65704524/e7ffb097-34dd-4a5f-a25d-ac3642a6b0fa)
 
+**JJack 사용해보기 :baby_chick:[JJack](https://nwitter-64113.web.app/)**
+
+
 ## 프로젝트 소개
 
 개발 기간 : 2023.11.02 ~  
@@ -13,7 +16,6 @@ X(구 트위터) 클론 코딩
 
 [노마드코더 강의](https://nomadcoders.co/nwitter/lobby) 참고하여 만들고 추가 기능 구현
 
-🔗[JJack](https://nwitter-64113.web.app/)
 
 ## 기술 스택
 
@@ -29,3 +31,4 @@ X(구 트위터) 클론 코딩
 - 트윗 작성, 수정
 - 닉네임으로 사용자 찾기
 - 유저 프로필 보기 & 수정하기
+- 유저 팔로우
