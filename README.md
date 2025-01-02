@@ -6,21 +6,20 @@
 
 ![JJack-tweeting](https://github.com/zero0205/Nwitter/assets/65704524/e7ffb097-34dd-4a5f-a25d-ac3642a6b0fa)
 
-**JJack 사용해보기 :baby_chick:[JJack](https://nwitter-64113.web.app/)**
+## JJack 사용해보기
+
+[:baby_chick:JJack](https://nwitter-64113.web.app/)
 
 
 ## 프로젝트 소개
 
-개발 기간 : 2023.11.02 ~  
+개발 기간 : 2023.11 ~  2023.12
 X(구 트위터) 클론 코딩
 
 
 ## 기술 스택
 
-<img  src="https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=white">   
-<img  src="https://img.shields.io/badge/typescript-3178C6?logo=typescript&logoColor=white">
-
-<img  src="https://img.shields.io/badge/Firebase-071a2b?logo=firebase&logoColor=FFCA28">
+<img  src="https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=white"> <img  src="https://img.shields.io/badge/typescript-3178C6?logo=typescript&logoColor=white"> <img  src="https://img.shields.io/badge/Firebase-071a2b?logo=firebase&logoColor=FFCA28">
 
 ## 구현 기능
 
